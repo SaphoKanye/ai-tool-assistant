@@ -44,6 +44,26 @@ try:
 except Exception as e:
     st.exception(e)
     st.stop()
+# --- Standardize Excel headers to avoid KeyError ---
+sheet1.columns = sheet1.columns.astype(str).str.strip()  # remove extra spaces
+
+rename_map = {
+    'business function': 'Business Functions',
+    'business functions': 'Business Functions',
+    'business function activities': 'Business Function Activities',
+    'business activities': 'Business Function Activities',
+    'activity': 'Business Function Activities',
+    'activities': 'Business Function Activities',
+    'ai tool type': 'AI Tool Type',
+    'ai tool types': 'AI Tool Type',
+    'tool type': 'AI Tool Type',
+    'ai category': 'AI Tool Type',
+    'ai tool category': 'AI Tool Type'
+}
+sheet1.rename(
+    columns={c: rename_map.get(c.lower(), c) for c in sheet1.columns},
+    inplace=True
+)
 
 # -------- Map columns safely
 fn_col = find_col(sheet1, FN_ALIASES)
